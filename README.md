@@ -1,6 +1,6 @@
 # General Lookup of α-Decay for Optimised Search (GLαDOS) #
 
-GLαDOS is a 
+GLαDOS is an alpha chain constructor, which can help in discerning possible summed energies due to fast decays.
 
 ## Setup
 ### Pre-requisites
