@@ -1,0 +1,16 @@
+alphas.txt
+data.csv
+setup.py
+GL_DOS.egg-info/PKG-INFO
+GL_DOS.egg-info/SOURCES.txt
+GL_DOS.egg-info/dependency_links.txt
+GL_DOS.egg-info/entry_points.txt
+GL_DOS.egg-info/not-zip-safe
+GL_DOS.egg-info/requires.txt
+GL_DOS.egg-info/top_level.txt
+glados/__init__.py
+glados/daughter.py
+glados/filldictionary.py
+glados/glados.py
+glados/nucleus.py
+glados/searcher.py
