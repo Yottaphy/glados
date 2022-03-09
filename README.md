@@ -22,13 +22,19 @@ and then enter the directory that was created and install
 
 ## Usage
 Once installed, GLαDOS can be used directly from the terminal. Some flags have to be included for the calculation to take place:
-> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] -p PARENTENERGY -c CHILDENERGY -s SUMPEAK [-t THIRDDECAY]`
+> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] -p PARENTENERGY [-l lnTau] [-c CHILDENERGY] [-s SUMPEAK] [-t THIRDDECAY]`
 
-Flags in square brackets are optional. The rest are mandatory. SUMPEAK is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing.
+Flags in square brackets are optional. The rest are mandatory. `-l` triggers [energy-lifetime search](#energy-lifetime-search) and `-c` triggers [chain search](#chain-search). `-c` overrules `-l`.
 
-If the -t option is passed, no matter with what argument, the parent to the heaviest nucleus in the search will also be shown if it was found in the range.
+### Energy-lifetime Search
+`PARENTENERGY` is treated as the energy of the alpha decay, and `lnTau` is the natural log of the decay lifetime. 
 
-### Output
+### Chain Search
+`SUMPEAK` is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing.
+
+If the `-t` option is passed, no matter with what argument, the parent to the heaviest nucleus in the search will also be shown if it was found in the range.
+
+## Output
 
 The output shows a list of possible chains, each in their own table. They can be saved into an output file like:
 
