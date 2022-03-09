@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='GLaDOS alpha',
-      version='1.0',
+      version='1.3',
       description='General Lookup of α-Decay for Optimised Search (GLαDOS)',
       url='https://github.com/Yottaphy/glados',
       author='Jorge Romero',

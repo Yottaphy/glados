@@ -1,8 +1,9 @@
 import argparse
+from xmlrpc.client import Boolean
 
 from .nucleus import Nucleus, elements
 from .filldictionary import fillDictionary 
-from .daughter import alphaDaughter
+from .daughter import alphaDaughter, alphaParent
 from .searcher import lookup, possibleSums
 import numpy as np
 
@@ -40,8 +41,12 @@ def get_parser():
     parser.add_argument('-s', '--sumpeak',
                         type=int,
                         required=True,
-                        help='Where is the sum peak. 1 = parent decay, 2 = child decay. Everything else = No sum peak')
-    
+                        help='Where is the sum peak. 1 = parent decay, 2 = child decay. Everything else = No sum peak')    
+    parser.add_argument('-t', '--thirddecay',
+                        type=bool,
+                        default=False,
+                        required=False,
+                        help='Is this a second-third combination? If true, the first nucleus will be given')
 
     args = parser.parse_args()
     return args, parser
@@ -89,6 +94,18 @@ def main():
                     daughter      = alphaDaughter(parent, dicNuc)
                     candidates.append((parent,daughter))
 
+    if(args.thirddecay): #Appends the parent of the first candidate at the beginning of the list if thirddecay is selected.
+        print('hello')
+        newcandidates = []
+        for tuple in candidates:
+            if(not alphaParent(tuple[0], dicNuc)): 
+                print('No parent found in range.')
+            else:
+                grandparent = alphaParent(tuple[0], dicNuc)
+                newtuple = (grandparent, *tuple)
+                newcandidates.append(newtuple)
+        candidates = newcandidates
+
     for tuple in candidates:
         print('------------------------------')
         print('Nucleus', '\t', 'Energy (keV)')
@@ -97,5 +114,6 @@ def main():
             print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha))
         print('------------------------------')
         print('\n')
+
 if __name__ == '__main__':
     main()
