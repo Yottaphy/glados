@@ -4,8 +4,8 @@ from xmlrpc.client import Boolean
 from .nucleus import Nucleus, elements
 from .filldictionary import fillDictionary 
 from .daughter import alphaDaughter, alphaParent
-from .searcher import lookup, possibleSums
-import numpy as np
+from .searcher import lookup, possibleSums, searcher
+from engineering_notation import EngNumber
 
 from matplotlib import pyplot as plt
 plt.rcParams.update({'font.size': 22})
@@ -34,13 +34,14 @@ def get_parser():
                         type=int,
                         required=True,
                         help='Energy of the first decay')
+    parser.add_argument('-l', '--lnTau',
+                        type=float,
+                        help='Natural log of decay half-life')
     parser.add_argument('-c', '--childenergy',
                         type=int,
-                        required=True,
                         help='Energy of the second decay')
     parser.add_argument('-s', '--sumpeak',
                         type=int,
-                        required=True,
                         help='Where is the sum peak. 1 = parent decay, 2 = child decay. Everything else = No sum peak')    
     parser.add_argument('-t', '--thirddecay',
                         type=bool,
@@ -64,56 +65,67 @@ def main():
         sumInChild = True
 
     candidates = []
+    if args.childenergy is not None:
+        if(sumInParent):
+            listofParents       = possibleSums(args.parentenergy, dicNuc)
+            listofGrandchildren = lookup(args.childenergy, dicNuc)
+            for parent in listofParents:
+                if parent.z-4 > args.zrange[0] and parent.n - 4 > args.nrange[0]:
+                    if alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc) in listofGrandchildren:
+                        daughter      = alphaDaughter(parent, dicNuc)
+                        granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
+                        candidates.append((parent,daughter,granddaughter))
 
-    if(sumInParent):
-        listofParents       = possibleSums(args.parentenergy, dicNuc)
-        listofGrandchildren = lookup(args.childenergy, dicNuc)
-        for parent in listofParents:
-            if parent.z-4 > args.zrange[0] and parent.n - 4 > args.nrange[0]:
-                if alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc) in listofGrandchildren:
-                    daughter      = alphaDaughter(parent, dicNuc)
-                    granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
-                    candidates.append((parent,daughter,granddaughter))
+        elif(sumInChild):
+            listofParents  = lookup(args.parentenergy, dicNuc)
+            listofChildren = possibleSums(args.childenergy, dicNuc)
+            for parent in listofParents:
+                if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
+                    if alphaDaughter(parent, dicNuc) in listofChildren:
+                        daughter      = alphaDaughter(parent, dicNuc)
+                        granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
+                        candidates.append((parent,daughter,granddaughter))               
 
-    elif(sumInChild):
-        listofParents  = lookup(args.parentenergy, dicNuc)
-        listofChildren = possibleSums(args.childenergy, dicNuc)
-        for parent in listofParents:
-            if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
-                if alphaDaughter(parent, dicNuc) in listofChildren:
-                    daughter      = alphaDaughter(parent, dicNuc)
-                    granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
-                    candidates.append((parent,daughter,granddaughter))               
+        else:
+            listofParents  = lookup(args.parentenergy, dicNuc)
+            listofChildren = lookup(args.childenergy, dicNuc)
+            for parent in listofParents:
+                if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
+                    if alphaDaughter(parent, dicNuc) in listofChildren:
+                        daughter      = alphaDaughter(parent, dicNuc)
+                        candidates.append((parent,daughter))
 
-    else:
-        listofParents  = lookup(args.parentenergy, dicNuc)
-        listofChildren = lookup(args.childenergy, dicNuc)
-        for parent in listofParents:
-            if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
-                if alphaDaughter(parent, dicNuc) in listofChildren:
-                    daughter      = alphaDaughter(parent, dicNuc)
-                    candidates.append((parent,daughter))
-
-    if(args.thirddecay): #Appends the parent of the first candidate at the beginning of the list if thirddecay is selected.
-        print('hello')
-        newcandidates = []
+        if(args.thirddecay): #Appends the parent of the first candidate at the beginning of the list if thirddecay is selected.
+            newcandidates = []
+            for tuple in candidates:
+                if(not alphaParent(tuple[0], dicNuc)): 
+                    print('No parent found in range.')
+                else:
+                    grandparent = alphaParent(tuple[0], dicNuc)
+                    newtuple = (grandparent, *tuple)
+                    newcandidates.append(newtuple)
+            candidates = newcandidates
+        
         for tuple in candidates:
-            if(not alphaParent(tuple[0], dicNuc)): 
-                print('No parent found in range.')
-            else:
-                grandparent = alphaParent(tuple[0], dicNuc)
-                newtuple = (grandparent, *tuple)
-                newcandidates.append(newtuple)
-        candidates = newcandidates
+            print('----------------------------------------------------')
+            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)')
+            print('----------------------------------------------------')
+            for nucleus in tuple:
+                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife))
+            print('----------------------------------------------------')
+            print('\n')
 
-    for tuple in candidates:
-        print('------------------------------')
-        print('Nucleus', '\t', 'Energy (keV)')
-        print('------------------------------')
-        for nucleus in tuple:
-            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha))
-        print('------------------------------')
+    elif args.lnTau is not None:
+        candidates = searcher(args.parentenergy, args.lnTau, dicNuc)
+
+        print('----------------------------------------------------')
+        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)')
+        print('----------------------------------------------------')
+        for nucleus in candidates:
+            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife))
+        print('----------------------------------------------------')
         print('\n')
+    
 
 if __name__ == '__main__':
     main()
