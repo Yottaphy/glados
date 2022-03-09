@@ -9,7 +9,7 @@ The `GLαDOS` package is a python package. It requires Python3 to be installed a
 ### Install
 You can install the package directly through `pip`: 
 
->`$ pip install -i https://test.pypi.org/simple/ GLaDOS-alpha==1.0`
+>`$ pip install GLaDOS-alpha==1.0`
 
 Or, alternatively, you can clone the package's `git` repository:
 
@@ -22,9 +22,11 @@ and then enter the directory that was created and install
 
 ## Usage
 Once installed, GLαDOS can be used directly from the terminal. Some flags have to be included for the calculation to take place:
-> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] -p PARENTENERGY -c CHILDENERGY -s SUMPEAK`
+> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] -p PARENTENERGY -c CHILDENERGY -s SUMPEAK [-t THIRDDECAY]`
 
 Flags in square brackets are optional. The rest are mandatory. SUMPEAK is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing.
+
+If the -t option is passed, no matter with what argument, the parent to the heaviest nucleus in the search will also be shown if it was found in the range.
 
 ### Output
 
