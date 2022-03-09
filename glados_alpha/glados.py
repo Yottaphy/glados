@@ -5,6 +5,7 @@ from .nucleus import Nucleus, elements
 from .filldictionary import fillDictionary 
 from .daughter import alphaDaughter, alphaParent
 from .searcher import lookup, possibleSums, searcher
+from math import log
 from engineering_notation import EngNumber
 
 from matplotlib import pyplot as plt
@@ -107,23 +108,23 @@ def main():
             candidates = newcandidates
         
         for tuple in candidates:
-            print('----------------------------------------------------')
-            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)')
-            print('----------------------------------------------------')
+            print('--------------------------------------------------------------------')
+            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)', '\t', 'log(Halflife (s))')
+            print('--------------------------------------------------------------------')
             for nucleus in tuple:
-                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife))
-            print('----------------------------------------------------')
+                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
+            print('--------------------------------------------------------------------')
             print('\n')
 
     elif args.lnTau is not None:
         candidates = searcher(args.parentenergy, args.lnTau, dicNuc)
 
-        print('----------------------------------------------------')
-        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)')
-        print('----------------------------------------------------')
+        print('--------------------------------------------------------------------')
+        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)', '\t', 'log(Halflife (s))')
+        print('--------------------------------------------------------------------')
         for nucleus in candidates:
-            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife))
-        print('----------------------------------------------------')
+            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
+        print('--------------------------------------------------------------------')
         print('\n')
     
 
