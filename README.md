@@ -9,7 +9,7 @@ The `GLαDOS` package is a python package. It requires Python3 to be installed a
 ### Install
 You can install the package directly through `pip`: 
 
->`$ pip install GLaDOS-alpha==2.1`
+>`$ pip install GLaDOS-alpha`
 
 Or, alternatively, you can clone the package's `git` repository:
 
