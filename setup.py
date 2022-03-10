@@ -1,8 +1,13 @@
 from setuptools import setup
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(name='GLaDOS alpha',
       version='2.1',
       description='General Lookup of α-Decay for Optimised Search (GLαDOS)',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       url='https://github.com/Yottaphy/glados',
       author='Jorge Romero',
       author_email='joromero@jyu.fi',
