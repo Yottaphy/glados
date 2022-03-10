@@ -1,15 +1,15 @@
 # General Lookup of α-Decay for Optimised Search (GLαDOS) #
 
-GLαDOS is an alpha chain constructor, which can help in discerning possible summed energies due to fast decays.
+GLαDOS is a terminal-based alpha chain constructor, which can help in discerning possible summed energies due to fast decays. It can be used to search the nuclear chart for an energy-lifetime combination or to construct an alpha chain from a series of successive energies in coincidence, including possible sum peaks. 
 
 ## Setup
 ### Pre-requisites
-The `GLαDOS` package is a python package. It requires Python3 to be installed and `pip` to be up to date. It also requires the `argparse` package to be installed, but it will be automatically installed.
+The `GLαDOS` package is a python package. It requires Python3 to be installed and `pip` to be up to date. It also requires the `argparse` and `engineering_notation` packages to be installed, but they will be automatically installed. If they are not, install them using `pip install argparse` and `pip install engineering_notation`, respectively.
 
 ### Install
 You can install the package directly through `pip`: 
 
->`$ pip install GLaDOS-alpha==2.0`
+>`$ pip install GLaDOS-alpha==2.1`
 
 Or, alternatively, you can clone the package's `git` repository:
 
@@ -33,8 +33,15 @@ Flags in square brackets are optional. The rest are mandatory. `-l` triggers [en
 `SUMPEAK` is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing.
 
 If the `-t` option is passed, no matter with what argument, the parent to the heaviest nucleus in the search will also be shown if it was found in the range.
+## Input
+
+The input file must contain 5 columns: n, z, alpha energy (keV), alpha energy error (keV) and lifetime (s). Stable isotopes are assigned -1 s lifetimes, but any negative value would serve the same purpose. 
+
+The file `alpha.dat` provided in the Git repo can serve as an example or be used directly. It contains data taken from [Nudat3](https://www.nndc.bnl.gov/nudat3/), in the National Nuclear Data Center (Brookhaven National Laboratory, USA). The data was retrieved in March 2022. 
 
 ## Output
+
+Output data are shown with the same units as they are input with. Lifetimes are shown with usual units (seconds, ms, us, hours, minutes, etc.).
 
 The output shows a list of possible chains, each in their own table. They can be saved into an output file like:
 

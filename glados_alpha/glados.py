@@ -109,10 +109,10 @@ def main():
         
         for tuple in candidates:
             print('--------------------------------------------------------------------')
-            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)', '\t', 'log(Halflife (s))')
+            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Half-life', '\t', 'log(Half-life (s))')
             print('--------------------------------------------------------------------')
             for nucleus in tuple:
-                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
+                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
             print('--------------------------------------------------------------------')
             print('\n')
 
@@ -120,10 +120,10 @@ def main():
         candidates = searcher(args.parentenergy, args.lnTau, dicNuc)
 
         print('--------------------------------------------------------------------')
-        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Halflife (s)', '\t', 'log(Halflife (s))')
+        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Half-life', '\t', 'log(Half-life (s))')
         print('--------------------------------------------------------------------')
         for nucleus in candidates:
-            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', EngNumber(nucleus.halflife), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
+            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
         print('--------------------------------------------------------------------')
         print('\n')
     
