@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: GLaDOS-alpha
-Version: 2.1.1
+Version: 3.0
 Summary: General Lookup of α-Decay for Optimised Search (GLαDOS)
 Home-page: https://github.com/Yottaphy/glados
 Author: Jorge Romero
@@ -33,17 +33,23 @@ and then enter the directory that was created and install
 
 ## Usage
 Once installed, GLαDOS can be used directly from the terminal. Some flags have to be included for the calculation to take place:
-> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] -p PARENTENERGY [-l lnTau] [-c CHILDENERGY] [-s SUMPEAK] [-t THIRDDECAY]`
+> `$ glados_alpha [-h] -i INPUTFILE [-z zmin zmax] [-n nmin nmax] [-e NUCLIDENAME] [-p PARENTENERGY] [-l lnTau] [-c CHILDENERGY] [-s SUMPEAK] [-t THIRDDECAY]`
 
-Flags in square brackets are optional. The rest are mandatory. `-l` triggers [energy-lifetime search](#energy-lifetime-search) and `-c` triggers [chain search](#chain-search). `-c` overrules `-l`.
+Flags in square brackets are optional. The rest are mandatory. `-e` triggers [nuclide info](#nuclide-info), `l` triggers [energy-lifetime search](#energy-lifetime-search) and `-c` triggers [chain search](#chain-search). `-c` overrules `-l`.
+
+### Nuclide Info
+To print the data for a single nuclide, the `NUCLIDENAME` option has to be passed, with the format XA, where X is the element symbol and A is the mass number. Valid examples are: U238, Pa227, He4. The following examples are invalid: 238U (wrong order), PA227 (bad capitalisation), he4 (bad capitalisation), U-238 (hyphen).
 
 ### Energy-lifetime Search
-`PARENTENERGY` is treated as the energy of the alpha decay, and `lnTau` is the natural log of the decay lifetime. 
+`PARENTENERGY` is the energy of the alpha decay in keV, and `lnTau` is the natural log of the decay lifetime in seconds. A set of compatible candidates will be displayed in order of mass number. The range of searched energies is ±150 keV and the range of searched log lifetimes is ±1.
 
 ### Chain Search
-`SUMPEAK` is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing.
+Chain search requires `PARENTENERGY` and `CHILDENERGY`. All chains within the range where two consecutive alpha decays (2 neutron, 2 proton steps) match the inputs within 150 keV will be displayed.
+
+`SUMPEAK` is a number: 1 for summing in the first decay, 2 for summing in the second decay. Anything else will not assume summing. All possible chains, including summing in the indicated peak, will be displayed.
 
 If the `-t` option is passed, no matter with what argument, the parent to the heaviest nucleus in the search will also be shown if it was found in the range.
+
 ## Input
 
 The input file must contain 5 columns: n, z, alpha energy (keV), alpha energy error (keV) and lifetime (s). Stable isotopes are assigned -1 s lifetimes, but any negative value would serve the same purpose. 

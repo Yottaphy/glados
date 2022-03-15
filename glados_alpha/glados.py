@@ -5,6 +5,7 @@ from .nucleus import Nucleus, elements
 from .filldictionary import fillDictionary 
 from .daughter import alphaDaughter, alphaParent
 from .searcher import lookup, possibleSums, searcher
+from .printinfo import printinfo
 from math import log
 from engineering_notation import EngNumber
 
@@ -19,21 +20,23 @@ def get_parser():
                         type=str,
                         required=True,
                         help='Input file where information is stored. In order: dummy column, N, Z, E, deltaE')
+    parser.add_argument('-e', '--nuclidename',
+                        type=str,
+                        help='Nuclide name to display in the form XA where X is the element symbol and A is the mass')
     parser.add_argument('-z', '--zrange',
                         nargs=2,
                         metavar=('zmin','zmax'),
                         type=int,
-                        default=(83,103),
+                        default=(80,103),
                         help='Range of Z to be searched, from min to max')
     parser.add_argument('-n', '--nrange',
                         nargs=2,
                         metavar=('nmin','nmax'),
                         type=int,
-                        default=(126,156),
+                        default=(120,156),
                         help='Range of N to be searched, from min to max')
     parser.add_argument('-p', '--parentenergy',
                         type=int,
-                        required=True,
                         help='Energy of the first decay')
     parser.add_argument('-l', '--lnTau',
                         type=float,
@@ -57,7 +60,17 @@ def main():
     args, parser = get_parser()   
     
     dicNuc = fillDictionary(args.inputfile, *args.nrange, *args.zrange)
-    
+
+    #Nuclide info mode
+    if args.nuclidename is not None:
+        try:
+            nucleus = dicNuc[args.nuclidename]
+            printinfo(nucleus)
+        except:
+            print("Nuclide is invalid or outside the range.")
+            exit()
+
+    #Setting flags for sumpeaks
     sumInParent = False
     sumInChild  = False
     if args.sumpeak == 1:
@@ -65,9 +78,12 @@ def main():
     if args.sumpeak == 2:
         sumInChild = True
 
+    #Chain Search Mode
     candidates = []
+    if args.parentenergy is None:
+        exit()
     if args.childenergy is not None:
-        if(sumInParent):
+        if(sumInParent): #sum in the first decay
             listofParents       = possibleSums(args.parentenergy, dicNuc)
             listofGrandchildren = lookup(args.childenergy, dicNuc)
             for parent in listofParents:
@@ -77,7 +93,7 @@ def main():
                         granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
                         candidates.append((parent,daughter,granddaughter))
 
-        elif(sumInChild):
+        elif(sumInChild): #sum in the second decay
             listofParents  = lookup(args.parentenergy, dicNuc)
             listofChildren = possibleSums(args.childenergy, dicNuc)
             for parent in listofParents:
@@ -87,7 +103,7 @@ def main():
                         granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
                         candidates.append((parent,daughter,granddaughter))               
 
-        else:
+        else: #no summing mode
             listofParents  = lookup(args.parentenergy, dicNuc)
             listofChildren = lookup(args.childenergy, dicNuc)
             for parent in listofParents:
@@ -108,24 +124,11 @@ def main():
             candidates = newcandidates
         
         for tuple in candidates:
-            print('--------------------------------------------------------------------')
-            print('Nucleus', '\t', 'Energy (keV)', '\t', 'Half-life', '\t', 'log(Half-life (s))')
-            print('--------------------------------------------------------------------')
-            for nucleus in tuple:
-                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
-            print('--------------------------------------------------------------------')
-            print('\n')
+            printinfo(tuple)
 
-    elif args.lnTau is not None:
+    elif args.lnTau is not None: #Energy-lifetime Search mode
         candidates = searcher(args.parentenergy, args.lnTau, dicNuc)
-
-        print('--------------------------------------------------------------------')
-        print('Nucleus', '\t', 'Energy (keV)', '\t', 'Half-life', '\t', 'log(Half-life (s))')
-        print('--------------------------------------------------------------------')
-        for nucleus in candidates:
-            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
-        print('--------------------------------------------------------------------')
-        print('\n')
+        printinfo(candidates)
     
 
 if __name__ == '__main__':
