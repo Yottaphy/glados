@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(name='GLaDOS alpha',
-      version='3.0',
+      version='3.0.1',
       description='General Lookup of α-Decay for Optimised Search (GLαDOS)',
       long_description=long_description,
       long_description_content_type='text/markdown',

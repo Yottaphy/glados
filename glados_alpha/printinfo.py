@@ -7,10 +7,13 @@ def printinfo(input):
     print('--------------------------------------------------------------------')
 
     if type(input) is Nucleus:
-        print(input.name, '\t\t', int(input.alpha), '±', int(input.delta_alpha), '\t', input.showTime(), '\t\t', "{:.2f}".format(log(input.halflife)))
-    else:
-        for nucleus in input:
-                print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
-     
+        input = [input]
+    
+    for nucleus in input:
+        if nucleus.halflife == -1:
+            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', 'STABLE/UNKNOWN', '\t\t', " ")
+        else:
+            print(nucleus.name, '\t\t', int(nucleus.alpha), '±', int(nucleus.delta_alpha), '\t', nucleus.showTime(), '\t\t', "{:.2f}".format(log(nucleus.halflife)))
+    
     print('--------------------------------------------------------------------')
     print('\n')
