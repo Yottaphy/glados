@@ -5,3 +5,4 @@
 GLaDOS.egg-info/
 build/
 dist/
+dataconvert.py

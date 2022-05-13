@@ -27,13 +27,13 @@ def get_parser():
                         nargs=2,
                         metavar=('zmin','zmax'),
                         type=int,
-                        default=(80,103),
+                        default=(50,118),
                         help='Range of Z to be searched, from min to max')
     parser.add_argument('-n', '--nrange',
                         nargs=2,
                         metavar=('nmin','nmax'),
                         type=int,
-                        default=(120,156),
+                        default=(50,200),
                         help='Range of N to be searched, from min to max')
     parser.add_argument('-p', '--parentenergy',
                         type=int,
@@ -52,6 +52,16 @@ def get_parser():
                         default=False,
                         required=False,
                         help='Is this a second-third combination? If true, the first nucleus will be given')
+    parser.add_argument('-Y', '--halflifemax',
+                        type=float,
+                        default=10E38,
+                        required=False,
+                        help='Maximum half-life in seconds')
+    parser.add_argument('-I', '--intensitythreshold',
+                        type=float,
+                        default=0,
+                        required=False,
+                        help='Minimum intensity (%)')
 
     args = parser.parse_args()
     return args, parser
@@ -59,16 +69,15 @@ def get_parser():
 def main():
     args, parser = get_parser()   
     
-    dicNuc = fillDictionary(args.inputfile, *args.nrange, *args.zrange)
+    INTENSITY_THRESHOLD = args.intensitythreshold
+    HALFLIFE_MAXIMUM    = args.halflifemax
+
+    dicNuc = fillDictionary(args.inputfile, *args.nrange, *args.zrange, INTENSITY_THRESHOLD, HALFLIFE_MAXIMUM)
 
     #Nuclide info mode
     if args.nuclidename is not None:
-        try:
-            nucleus = dicNuc[args.nuclidename]
-            printinfo(nucleus)
-        except:
-            print("Nuclide is invalid or outside the range.")
-            exit()
+        nucleus = dicNuc[args.nuclidename]
+        printinfo(nucleus)
 
     #Setting flags for sumpeaks
     sumInParent = False
@@ -101,7 +110,8 @@ def main():
                     if alphaDaughter(parent, dicNuc) in listofChildren:
                         daughter      = alphaDaughter(parent, dicNuc)
                         granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
-                        candidates.append((parent,daughter,granddaughter))               
+                        if (parent,daughter,granddaughter) not in candidates:
+                            candidates.append((parent,daughter,granddaughter))               
 
         else: #no summing mode
             listofParents  = lookup(args.parentenergy, dicNuc)
@@ -110,7 +120,8 @@ def main():
                 if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
                     if alphaDaughter(parent, dicNuc) in listofChildren:
                         daughter      = alphaDaughter(parent, dicNuc)
-                        candidates.append((parent,daughter))
+                        if (parent,daughter) not in candidates:
+                            candidates.append((parent,daughter))
 
         if(args.thirddecay): #Appends the parent of the first candidate at the beginning of the list if thirddecay is selected.
             newcandidates = []

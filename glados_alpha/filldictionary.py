@@ -1,13 +1,23 @@
 import numpy as np
-from .nucleus import Nucleus, elements
+from .nucleus import Nucleus, Channel, elements
 
 dicNuc = {}
-def fillDictionary(filename, nmin, nmax, zmin, zmax):
-    neutrons, protons, energies, deltas, halflives = np.genfromtxt( filename, unpack=True, skip_header=1, skip_footer=0, autostrip=True)
+
+
+
+def fillDictionary(filename, nmin, nmax, zmin, zmax, INTENSITY_THRESHOLD, HALFLIFE_MAXIMUM):
+    protons, neutrons, halflives, energies, energydeltas, intensities,intensityerrs = np.genfromtxt( filename, unpack=True, skip_header=1, skip_footer=0, #delimiter=','
+    )
     dicNuc = {}
-    for i in range(0,6655):
+
+    for i in range(len(protons)):
         if neutrons[i] > nmin and neutrons[i] < nmax and protons[i] > zmin and protons[i] < zmax:
-            nuc = Nucleus(neutrons[i], protons[i], energies[i], deltas[i], halflives[i])             
-            dicNuc[elements[nuc.z] + str(nuc.a)] = nuc
+            
+            dicNuc[elements[protons[i]] + str(int(protons[i]+neutrons[i]))] = Nucleus(neutrons[i],protons[i]) 
+            
+            if intensities[i] >= INTENSITY_THRESHOLD and halflives[i] < HALFLIFE_MAXIMUM:
+                
+                dicNuc[elements[protons[i]] + str(int(protons[i]+neutrons[i]))].addChannel(halflives[i], energies[i], energydeltas[i], intensities[i], intensityerrs[i])
+
     return dicNuc
 

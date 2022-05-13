@@ -41,9 +41,9 @@ If the `-t` option is passed, no matter with what argument, the parent to the he
 
 ## Input
 
-The input file must contain 5 columns: n, z, alpha energy (keV), alpha energy error (keV) and lifetime (s). Stable isotopes are assigned -1 s lifetimes, but any negative value would serve the same purpose. 
+The input file is a comma separated value file that must contain the following columns in order: n, z, lifetime (s), alpha energy (keV), alpha energy error (keV), alpha intensity (%) and alpha intensity uncertainty (%). Isotopes that have several decay channels must have each channel in an individual row with all column values in it. Negative lifetimes are interpreted as stable/unknown.
 
-The file `alpha.dat` provided in the Git repo can serve as an example or be used directly. It contains data taken from [Nudat3](https://www.nndc.bnl.gov/nudat3/), in the National Nuclear Data Center (Brookhaven National Laboratory, USA). The data was retrieved in March 2022. 
+The file `alpha.dat` provided in the Git repo can serve as an example or be used directly. It contains data taken from [Nudat3](https://www.nndc.bnl.gov/nudat3/), in the National Nuclear Data Center (Brookhaven National Laboratory, USA). The data was retrieved in May 2022. 
 
 ## Output
 
