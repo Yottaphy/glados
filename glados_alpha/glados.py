@@ -69,7 +69,7 @@ def get_parser():
 def main():
     args, parser = get_parser()   
     
-    INTENSITY_THRESHOLD = args.intensitythreshold
+    INTENSITY_THRESHOLD = 0.1 #args.intensitythreshold
     HALFLIFE_MAXIMUM    = args.halflifemax
 
     dicNuc = fillDictionary(args.inputfile, *args.nrange, *args.zrange, INTENSITY_THRESHOLD, HALFLIFE_MAXIMUM)
@@ -96,7 +96,7 @@ def main():
             listofParents       = possibleSums(args.parentenergy, dicNuc)
             listofGrandchildren = lookup(args.childenergy, dicNuc)
             for parent in listofParents:
-                if parent.z-4 > args.zrange[0] and parent.n - 4 > args.nrange[0]:
+                #if parent.z-4 > args.zrange[0] and parent.n - 4 > args.nrange[0]:
                     if alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc) in listofGrandchildren:
                         daughter      = alphaDaughter(parent, dicNuc)
                         granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)
@@ -106,7 +106,7 @@ def main():
             listofParents  = lookup(args.parentenergy, dicNuc)
             listofChildren = possibleSums(args.childenergy, dicNuc)
             for parent in listofParents:
-                if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
+                #if parent.z-2 > args.zrange[0] and parent.n-2 > args.nrange[0]:
                     if alphaDaughter(parent, dicNuc) in listofChildren:
                         daughter      = alphaDaughter(parent, dicNuc)
                         granddaughter = alphaDaughter(alphaDaughter(parent, dicNuc), dicNuc)

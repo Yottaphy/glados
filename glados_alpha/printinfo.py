@@ -13,15 +13,15 @@ def printinfo(input):
         input = [input]
     
     for nucleus in input:
-            if len(nucleus.channels) < 1:
-                print(nucleus.name, '\n\t\t NO ALPHA INFORMATION ABOUT THIS NUCLEUS')
-            else: 
-                print(nucleus.name)
-                for channel in nucleus.channels: 
-                    if channel.intensity >100:
-                        print('\t\t', "ESTIMATED", '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(log(channel.halflife)))
-                    else:
-                        print('\t\t', "{:.1f}".format(channel.intensity), '±', "{:.1f}".format(channel.deltaintensity), '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(log(channel.halflife))) 
-                    
+        if len(nucleus.channels) < 1:
+            print(nucleus.name, '\n\t\t NO ALPHA INFORMATION ABOUT THIS NUCLEUS')
+        else: 
+            print(nucleus.name)
+            for channel in nucleus.channels: 
+                if channel.intensity >100:
+                    print('\t\t', "ESTIMATED", '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(lo(channel.halflife)))
+                else:
+                   print('\t\t', "{:.1f}".format(channel.intensity), '±', "{:.1f}".format(channel.deltaintensity), '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(log(channel.halflife))) 
+
     print('---------------------------------------------------------------------------------------------------')
     print('\n')

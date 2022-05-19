@@ -21,8 +21,9 @@ for i, row in q.iterrows():
     nlist = real.loc[real["n"] == n].index.values
 
     if len(set(zlist).intersection(nlist)) != 0:
-        for element in set(zlist).intersection(nlist):
-            outrow = real.iloc[element]
+        print(set(zlist).intersection(nlist))
+        for index in set(zlist).intersection(nlist):
+            outrow = real.iloc[index]
             print(z, n, "{:.6g}".format(outrow["halflife"]), outrow["energy"], outrow["DeltaAlpha"],outrow["intens"],outrow["DeltaIntens"]) 
     else:
         zlist = hl.loc[hl["z"] == z].index.values
