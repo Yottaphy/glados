@@ -1,7 +1,7 @@
 from .daughter import alphaDaughter
 from math import log
 
-SEARCH_WIDTH = 50 #keV
+SEARCH_WIDTH = 50 #keV - this is added on either side of the ref energy.
 
 def lookup(energy, dicNuc):
     output = []
@@ -30,7 +30,10 @@ def searcher(energy, time, dicNuc):
         if len(isotope.channels) < 1:
             continue
         for channel in isotope.channels:
-            if channel.energy > energy-SEARCH_WIDTH and channel.energy < energy+SEARCH_WIDTH and log(channel.halflife) > time - 1 and log(channel.halflife) < time + 1: 
+            if channel.halflife == 0:
+                if isotope not in output and time < -10: 
+                    output.append(isotope)
+            elif channel.energy > energy-SEARCH_WIDTH and channel.energy < energy+SEARCH_WIDTH and log(channel.halflife) > time - 1 and log(channel.halflife) < time + 1: 
                 if isotope not in output:
                     output.append(isotope)
     return output

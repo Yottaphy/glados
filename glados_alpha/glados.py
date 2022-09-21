@@ -23,17 +23,21 @@ def get_parser():
     parser.add_argument('-e', '--nuclidename',
                         type=str,
                         help='Nuclide name to display in the form XA where X is the element symbol and A is the mass')
+    parser.add_argument('-x', '--chain',
+                        type=int,
+                        default=0,
+                        help='If passed with -e/--nuclidename with a value different than 0, it will show the decay chain of the displayed nucleus')
     parser.add_argument('-z', '--zrange',
                         nargs=2,
                         metavar=('zmin','zmax'),
                         type=int,
-                        default=(50,118),
+                        default=(75,100),
                         help='Range of Z to be searched, from min to max')
     parser.add_argument('-n', '--nrange',
                         nargs=2,
                         metavar=('nmin','nmax'),
                         type=int,
-                        default=(50,200),
+                        default=(100,150),
                         help='Range of N to be searched, from min to max')
     parser.add_argument('-p', '--parentenergy',
                         type=int,
@@ -77,7 +81,18 @@ def main():
     #Nuclide info mode
     if args.nuclidename is not None:
         nucleus = dicNuc[args.nuclidename]
-        printinfo(nucleus)
+        if args.chain is not 0:
+            if alphaDaughter(nucleus, dicNuc) is not False:
+                if alphaDaughter(alphaDaughter(nucleus, dicNuc), dicNuc) is not False:
+                    show = (nucleus, alphaDaughter(nucleus, dicNuc), alphaDaughter(alphaDaughter(nucleus, dicNuc), dicNuc))
+                else:
+                    show = (nucleus, alphaDaughter(nucleus, dicNuc))
+            else:
+                show = nucleus
+        else: 
+            show = nucleus
+        
+        printinfo(show)
 
     #Setting flags for sumpeaks
     sumInParent = False
@@ -139,6 +154,9 @@ def main():
 
     elif args.lnTau is not None: #Energy-lifetime Search mode
         candidates = searcher(args.parentenergy, args.lnTau, dicNuc)
+        printinfo(candidates)
+    else:
+        candidates = lookup(args.parentenergy, dicNuc)
         printinfo(candidates)
     
 

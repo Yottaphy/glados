@@ -19,7 +19,9 @@ def printinfo(input):
             print(nucleus.name)
             for channel in nucleus.channels: 
                 if channel.intensity >100:
-                    print('\t\t', "ESTIMATED", '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(lo(channel.halflife)))
+                    print('\t\t', "ESTIMATED", '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(log(channel.halflife)))
+                elif channel.halflife == 0:
+                    print('\t\t', "{:.1f}".format(channel.intensity), '±', "{:.1f}".format(channel.deltaintensity), '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t') 
                 else:
                    print('\t\t', "{:.1f}".format(channel.intensity), '±', "{:.1f}".format(channel.deltaintensity), '\t', int(channel.energy), '±', int(channel.deltaenergy), '\t', channel.showTime(), '\t\t', "{:.2f}".format(log(channel.halflife))) 
 
